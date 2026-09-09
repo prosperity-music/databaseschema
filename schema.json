@@ -1,170 +1,170 @@
-﻿{
-  version: 1,
-  name: prosperity_music_d1,
-  description: Canonical database schema for Prosperity Music (Cloudflare D1 / SQLite),
-  tables: {
-    profiles: {
-      columns: {
-        id: TEXT PRIMARY KEY,
-        user_id: TEXT,
-        username: TEXT NOT NULL UNIQUE,
-        display_name: TEXT,
-        bio: TEXT DEFAULT '',
-        avatar_url: TEXT DEFAULT '',
-        cover_url: TEXT DEFAULT '',
-        social_link1: TEXT DEFAULT '',
-        social_link2: TEXT DEFAULT '',
-        social_link3: TEXT DEFAULT '',
-        cloudflare_token: TEXT DEFAULT '',
-        featured_song_title: TEXT DEFAULT '',
-        featured_song_id: TEXT DEFAULT '',
-        featured_artist: TEXT DEFAULT '',
-        featured_art_url: TEXT DEFAULT '',
-        featured_start_ms: INTEGER DEFAULT 0,
-        featured_duration_ms: INTEGER DEFAULT 30000,
-        followers_count: INTEGER DEFAULT 0,
-        following_count: INTEGER DEFAULT 0,
-        is_verified: INTEGER DEFAULT 0,
-        created_at: INTEGER DEFAULT (strftime('%s', 'now')),
-        updated_at: INTEGER DEFAULT (strftime('%s', 'now'))
+{
+  "version": 1,
+  "name": "prosperity_music_d1",
+  "description": "Canonical database schema for Prosperity Music (Cloudflare D1 / SQLite)",
+  "tables": {
+    "profiles": {
+      "columns": {
+        "id": "TEXT PRIMARY KEY",
+        "user_id": "TEXT",
+        "username": "TEXT NOT NULL UNIQUE",
+        "display_name": "TEXT",
+        "bio": "TEXT DEFAULT ''",
+        "avatar_url": "TEXT DEFAULT ''",
+        "cover_url": "TEXT DEFAULT ''",
+        "social_link1": "TEXT DEFAULT ''",
+        "social_link2": "TEXT DEFAULT ''",
+        "social_link3": "TEXT DEFAULT ''",
+        "cloudflare_token": "TEXT DEFAULT ''",
+        "featured_song_title": "TEXT DEFAULT ''",
+        "featured_song_id": "TEXT DEFAULT ''",
+        "featured_artist": "TEXT DEFAULT ''",
+        "featured_art_url": "TEXT DEFAULT ''",
+        "featured_start_ms": "INTEGER DEFAULT 0",
+        "featured_duration_ms": "INTEGER DEFAULT 30000",
+        "followers_count": "INTEGER DEFAULT 0",
+        "following_count": "INTEGER DEFAULT 0",
+        "is_verified": "INTEGER DEFAULT 0",
+        "created_at": "INTEGER DEFAULT (strftime('%s', 'now'))",
+        "updated_at": "INTEGER DEFAULT (strftime('%s', 'now'))"
       },
-      indexes: [
-        CREATE INDEX IF NOT EXISTS idx_profiles_username ON profiles(username);
+      "indexes": [
+        "CREATE INDEX IF NOT EXISTS idx_profiles_username ON profiles(username);"
       ]
     },
-    liked_songs: {
-      columns: {
-        id: TEXT PRIMARY KEY,
-        user_id: TEXT NOT NULL,
-        song_id: TEXT NOT NULL,
-        title: TEXT DEFAULT '',
-        song_title: TEXT DEFAULT '',
-        artist: TEXT DEFAULT '',
-        album: TEXT DEFAULT '',
-        art_url: TEXT DEFAULT '',
-        canvas_url: TEXT DEFAULT '',
-        duration: INTEGER DEFAULT 0,
-        created_at: INTEGER DEFAULT (strftime('%s', 'now')),
-        liked_at: INTEGER DEFAULT (strftime('%s', 'now'))
+    "liked_songs": {
+      "columns": {
+        "id": "TEXT PRIMARY KEY",
+        "user_id": "TEXT NOT NULL",
+        "song_id": "TEXT NOT NULL",
+        "title": "TEXT DEFAULT ''",
+        "song_title": "TEXT DEFAULT ''",
+        "artist": "TEXT DEFAULT ''",
+        "album": "TEXT DEFAULT ''",
+        "art_url": "TEXT DEFAULT ''",
+        "canvas_url": "TEXT DEFAULT ''",
+        "duration": "INTEGER DEFAULT 0",
+        "created_at": "INTEGER DEFAULT (strftime('%s', 'now'))",
+        "liked_at": "INTEGER DEFAULT (strftime('%s', 'now'))"
       },
-      constraints: [
-        UNIQUE(user_id, song_id)
+      "constraints": [
+        "UNIQUE(user_id, song_id)"
       ],
-      indexes: [
-        CREATE INDEX IF NOT EXISTS idx_liked_songs_user_id ON liked_songs(user_id);,
-        CREATE INDEX IF NOT EXISTS idx_liked_songs_song_id ON liked_songs(song_id);
+      "indexes": [
+        "CREATE INDEX IF NOT EXISTS idx_liked_songs_user_id ON liked_songs(user_id);",
+        "CREATE INDEX IF NOT EXISTS idx_liked_songs_song_id ON liked_songs(song_id);"
       ]
     },
-    playlists: {
-      columns: {
-        id: TEXT PRIMARY KEY,
-        user_id: TEXT,
-        owner_id: TEXT,
-        title: TEXT NOT NULL,
-        description: TEXT DEFAULT '',
-        cover_url: TEXT DEFAULT '',
-        is_public: INTEGER DEFAULT 0,
-        created_at: INTEGER DEFAULT (strftime('%s', 'now')),
-        updated_at: INTEGER DEFAULT (strftime('%s', 'now'))
+    "playlists": {
+      "columns": {
+        "id": "TEXT PRIMARY KEY",
+        "user_id": "TEXT",
+        "owner_id": "TEXT",
+        "title": "TEXT NOT NULL",
+        "description": "TEXT DEFAULT ''",
+        "cover_url": "TEXT DEFAULT ''",
+        "is_public": "INTEGER DEFAULT 0",
+        "created_at": "INTEGER DEFAULT (strftime('%s', 'now'))",
+        "updated_at": "INTEGER DEFAULT (strftime('%s', 'now'))"
       },
-      indexes: [
-        CREATE INDEX IF NOT EXISTS idx_playlists_owner_id ON playlists(owner_id);,
-        CREATE INDEX IF NOT EXISTS idx_playlists_user_id ON playlists(user_id);
+      "indexes": [
+        "CREATE INDEX IF NOT EXISTS idx_playlists_owner_id ON playlists(owner_id);",
+        "CREATE INDEX IF NOT EXISTS idx_playlists_user_id ON playlists(user_id);"
       ]
     },
-    playlist_tracks: {
-      columns: {
-        id: TEXT PRIMARY KEY,
-        playlist_id: TEXT NOT NULL,
-        song_id: TEXT NOT NULL,
-        title: TEXT DEFAULT '',
-        song_title: TEXT DEFAULT '',
-        artist: TEXT DEFAULT '',
-        album: TEXT DEFAULT '',
-        art_url: TEXT DEFAULT '',
-        canvas_url: TEXT DEFAULT '',
-        position: INTEGER DEFAULT 0,
-        added_at: INTEGER DEFAULT (strftime('%s', 'now'))
+    "playlist_tracks": {
+      "columns": {
+        "id": "TEXT PRIMARY KEY",
+        "playlist_id": "TEXT NOT NULL",
+        "song_id": "TEXT NOT NULL",
+        "title": "TEXT DEFAULT ''",
+        "song_title": "TEXT DEFAULT ''",
+        "artist": "TEXT DEFAULT ''",
+        "album": "TEXT DEFAULT ''",
+        "art_url": "TEXT DEFAULT ''",
+        "canvas_url": "TEXT DEFAULT ''",
+        "position": "INTEGER DEFAULT 0",
+        "added_at": "INTEGER DEFAULT (strftime('%s', 'now'))"
       },
-      constraints: [
-        UNIQUE(playlist_id, song_id)
+      "constraints": [
+        "UNIQUE(playlist_id, song_id)"
       ],
-      indexes: [
-        CREATE INDEX IF NOT EXISTS idx_playlist_tracks_playlist_id ON playlist_tracks(playlist_id);,
-        CREATE INDEX IF NOT EXISTS idx_playlist_tracks_song_id ON playlist_tracks(song_id);
+      "indexes": [
+        "CREATE INDEX IF NOT EXISTS idx_playlist_tracks_playlist_id ON playlist_tracks(playlist_id);",
+        "CREATE INDEX IF NOT EXISTS idx_playlist_tracks_song_id ON playlist_tracks(song_id);"
       ]
     },
-    playlist_collaborators: {
-      columns: {
-        id: TEXT PRIMARY KEY,
-        playlist_id: TEXT NOT NULL,
-        user_id: TEXT NOT NULL,
-        role: TEXT DEFAULT 'editor',
-        created_at: INTEGER DEFAULT (strftime('%s', 'now'))
+    "playlist_collaborators": {
+      "columns": {
+        "id": "TEXT PRIMARY KEY",
+        "playlist_id": "TEXT NOT NULL",
+        "user_id": "TEXT NOT NULL",
+        "role": "TEXT DEFAULT 'editor'",
+        "created_at": "INTEGER DEFAULT (strftime('%s', 'now'))"
       },
-      constraints: [
-        UNIQUE(playlist_id, user_id)
+      "constraints": [
+        "UNIQUE(playlist_id, user_id)"
       ],
-      indexes: [
-        CREATE INDEX IF NOT EXISTS idx_playlist_collaborators_playlist_id ON playlist_collaborators(playlist_id);,
-        CREATE INDEX IF NOT EXISTS idx_playlist_collaborators_user_id ON playlist_collaborators(user_id);
+      "indexes": [
+        "CREATE INDEX IF NOT EXISTS idx_playlist_collaborators_playlist_id ON playlist_collaborators(playlist_id);",
+        "CREATE INDEX IF NOT EXISTS idx_playlist_collaborators_user_id ON playlist_collaborators(user_id);"
       ]
     },
-    listening_history: {
-      columns: {
-        id: TEXT PRIMARY KEY,
-        user_id: TEXT NOT NULL,
-        song_id: TEXT NOT NULL,
-        title: TEXT DEFAULT '',
-        song_title: TEXT DEFAULT '',
-        artist: TEXT DEFAULT '',
-        album: TEXT DEFAULT '',
-        art_url: TEXT DEFAULT '',
-        canvas_url: TEXT DEFAULT '',
-        played_at: INTEGER DEFAULT (strftime('%s', 'now'))
+    "listening_history": {
+      "columns": {
+        "id": "TEXT PRIMARY KEY",
+        "user_id": "TEXT NOT NULL",
+        "song_id": "TEXT NOT NULL",
+        "title": "TEXT DEFAULT ''",
+        "song_title": "TEXT DEFAULT ''",
+        "artist": "TEXT DEFAULT ''",
+        "album": "TEXT DEFAULT ''",
+        "art_url": "TEXT DEFAULT ''",
+        "canvas_url": "TEXT DEFAULT ''",
+        "played_at": "INTEGER DEFAULT (strftime('%s', 'now'))"
       },
-      indexes: [
-        CREATE INDEX IF NOT EXISTS idx_listening_history_user_id ON listening_history(user_id);,
-        CREATE INDEX IF NOT EXISTS idx_listening_history_played_at ON listening_history(played_at DESC);,
-        CREATE UNIQUE INDEX IF NOT EXISTS idx_listening_history_user_song ON listening_history(user_id, song_id);
+      "indexes": [
+        "CREATE INDEX IF NOT EXISTS idx_listening_history_user_id ON listening_history(user_id);",
+        "CREATE INDEX IF NOT EXISTS idx_listening_history_played_at ON listening_history(played_at DESC);",
+        "CREATE UNIQUE INDEX IF NOT EXISTS idx_listening_history_user_song ON listening_history(user_id, song_id);"
       ]
     },
-    search_history: {
-      columns: {
-        id: TEXT PRIMARY KEY,
-        user_id: TEXT NOT NULL,
-        query: TEXT NOT NULL,
-        searched_at: INTEGER DEFAULT (strftime('%s', 'now'))
+    "search_history": {
+      "columns": {
+        "id": "TEXT PRIMARY KEY",
+        "user_id": "TEXT NOT NULL",
+        "query": "TEXT NOT NULL",
+        "searched_at": "INTEGER DEFAULT (strftime('%s', 'now'))"
       },
-      indexes: [
-        CREATE INDEX IF NOT EXISTS idx_search_history_user_id ON search_history(user_id);,
-        CREATE INDEX IF NOT EXISTS idx_search_history_searched_at ON search_history(searched_at DESC);
+      "indexes": [
+        "CREATE INDEX IF NOT EXISTS idx_search_history_user_id ON search_history(user_id);",
+        "CREATE INDEX IF NOT EXISTS idx_search_history_searched_at ON search_history(searched_at DESC);"
       ]
     },
-    user_clips: {
-      columns: {
-        id: TEXT PRIMARY KEY,
-        user_id: TEXT NOT NULL,
-        song_id: TEXT NOT NULL,
-        title: TEXT DEFAULT '',
-        artist: TEXT DEFAULT '',
-        art_url: TEXT DEFAULT '',
-        start_ms: INTEGER NOT NULL,
-        end_ms: INTEGER NOT NULL,
-        duration_ms: INTEGER NOT NULL DEFAULT 30000,
-        created_at: INTEGER DEFAULT (strftime('%s', 'now'))
+    "user_clips": {
+      "columns": {
+        "id": "TEXT PRIMARY KEY",
+        "user_id": "TEXT NOT NULL",
+        "song_id": "TEXT NOT NULL",
+        "title": "TEXT DEFAULT ''",
+        "artist": "TEXT DEFAULT ''",
+        "art_url": "TEXT DEFAULT ''",
+        "start_ms": "INTEGER NOT NULL",
+        "end_ms": "INTEGER NOT NULL",
+        "duration_ms": "INTEGER NOT NULL DEFAULT 30000",
+        "created_at": "INTEGER DEFAULT (strftime('%s', 'now'))"
       },
-      indexes: [
-        CREATE INDEX IF NOT EXISTS idx_user_clips_user_id ON user_clips(user_id);,
-        CREATE INDEX IF NOT EXISTS idx_user_clips_song_id ON user_clips(song_id);
+      "indexes": [
+        "CREATE INDEX IF NOT EXISTS idx_user_clips_user_id ON user_clips(user_id);",
+        "CREATE INDEX IF NOT EXISTS idx_user_clips_song_id ON user_clips(song_id);"
       ]
     },
-    canvas_cache: {
-      columns: {
-        song_id: TEXT PRIMARY KEY,
-        canvas_url: TEXT NOT NULL,
-        source: TEXT DEFAULT 'spotify',
-        updated_at: INTEGER DEFAULT (strftime('%s', 'now'))
+    "canvas_cache": {
+      "columns": {
+        "song_id": "TEXT PRIMARY KEY",
+        "canvas_url": "TEXT NOT NULL",
+        "source": "TEXT DEFAULT 'spotify'",
+        "updated_at": "INTEGER DEFAULT (strftime('%s', 'now'))"
       }
     }
   }
