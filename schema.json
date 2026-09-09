@@ -1,7 +1,7 @@
 {
-  "version": 2,
+  "version": 3,
   "name": "prosperity_music_d1",
-  "description": "Canonical database schema for Prosperity Music (Cloudflare D1 / SQLite)",
+  "description": "Comprehensive Canonical Cloudflare D1 Database Schema for Prosperity Music",
   "tables": {
     "profiles": {
       "columns": {
@@ -15,6 +15,7 @@
         "social_link2": "TEXT DEFAULT ''",
         "social_link3": "TEXT DEFAULT ''",
         "cloudflare_token": "TEXT DEFAULT ''",
+        "worker_version": "TEXT DEFAULT '1.0.0'",
         "is_verified": "INTEGER DEFAULT 0",
         "created_at": "INTEGER DEFAULT (strftime('%s', 'now'))",
         "updated_at": "INTEGER DEFAULT (strftime('%s', 'now'))"
@@ -22,6 +23,14 @@
       "indexes": [
         "CREATE INDEX IF NOT EXISTS idx_profiles_username ON profiles(username);"
       ]
+    },
+    "canvas_cache": {
+      "columns": {
+        "song_id": "TEXT PRIMARY KEY",
+        "canvas_url": "TEXT NOT NULL",
+        "source": "TEXT DEFAULT 'spotify'",
+        "updated_at": "INTEGER DEFAULT (strftime('%s', 'now'))"
+      }
     },
     "liked_songs": {
       "columns": {
@@ -44,56 +53,39 @@
         "CREATE INDEX IF NOT EXISTS idx_liked_songs_song_id ON liked_songs(song_id);"
       ]
     },
-    "playlists": {
+    "liked_albums": {
       "columns": {
         "id": "TEXT PRIMARY KEY",
-        "owner_id": "TEXT NOT NULL",
-        "title": "TEXT NOT NULL",
-        "description": "TEXT DEFAULT ''",
-        "cover_url": "TEXT DEFAULT ''",
-        "is_public": "INTEGER DEFAULT 0",
-        "created_at": "INTEGER DEFAULT (strftime('%s', 'now'))",
-        "updated_at": "INTEGER DEFAULT (strftime('%s', 'now'))"
-      },
-      "indexes": [
-        "CREATE INDEX IF NOT EXISTS idx_playlists_owner_id ON playlists(owner_id);"
-      ]
-    },
-    "playlist_tracks": {
-      "columns": {
-        "id": "TEXT PRIMARY KEY",
-        "playlist_id": "TEXT NOT NULL",
-        "song_id": "TEXT NOT NULL",
-        "song_title": "TEXT DEFAULT ''",
+        "user_id": "TEXT NOT NULL",
+        "album_id": "TEXT NOT NULL",
+        "title": "TEXT DEFAULT ''",
         "artist": "TEXT DEFAULT ''",
-        "album": "TEXT DEFAULT ''",
         "art_url": "TEXT DEFAULT ''",
-        "canvas_url": "TEXT DEFAULT ''",
-        "position": "INTEGER DEFAULT 0",
         "added_at": "INTEGER DEFAULT (strftime('%s', 'now'))"
       },
       "constraints": [
-        "UNIQUE(playlist_id, song_id)"
+        "UNIQUE(user_id, album_id)"
       ],
       "indexes": [
-        "CREATE INDEX IF NOT EXISTS idx_playlist_tracks_playlist_id ON playlist_tracks(playlist_id);",
-        "CREATE INDEX IF NOT EXISTS idx_playlist_tracks_song_id ON playlist_tracks(song_id);"
+        "CREATE INDEX IF NOT EXISTS idx_liked_albums_user_id ON liked_albums(user_id);",
+        "CREATE INDEX IF NOT EXISTS idx_liked_albums_album_id ON liked_albums(album_id);"
       ]
     },
-    "playlist_collaborators": {
+    "liked_playlists": {
       "columns": {
         "id": "TEXT PRIMARY KEY",
-        "playlist_id": "TEXT NOT NULL",
         "user_id": "TEXT NOT NULL",
-        "role": "TEXT DEFAULT 'editor'",
-        "created_at": "INTEGER DEFAULT (strftime('%s', 'now'))"
+        "playlist_id": "TEXT NOT NULL",
+        "title": "TEXT DEFAULT ''",
+        "art_url": "TEXT DEFAULT ''",
+        "added_at": "INTEGER DEFAULT (strftime('%s', 'now'))"
       },
       "constraints": [
-        "UNIQUE(playlist_id, user_id)"
+        "UNIQUE(user_id, playlist_id)"
       ],
       "indexes": [
-        "CREATE INDEX IF NOT EXISTS idx_playlist_collaborators_playlist_id ON playlist_collaborators(playlist_id);",
-        "CREATE INDEX IF NOT EXISTS idx_playlist_collaborators_user_id ON playlist_collaborators(user_id);"
+        "CREATE INDEX IF NOT EXISTS idx_liked_playlists_user_id ON liked_playlists(user_id);",
+        "CREATE INDEX IF NOT EXISTS idx_liked_playlists_playlist_id ON liked_playlists(playlist_id);"
       ]
     },
     "listening_history": {
@@ -114,6 +106,64 @@
         "CREATE UNIQUE INDEX IF NOT EXISTS idx_listening_history_user_song ON listening_history(user_id, song_id);"
       ]
     },
+    "playlist_collaborators": {
+      "columns": {
+        "id": "TEXT PRIMARY KEY",
+        "playlist_id": "TEXT NOT NULL",
+        "user_id": "TEXT NOT NULL",
+        "role": "TEXT DEFAULT 'editor'",
+        "created_at": "INTEGER DEFAULT (strftime('%s', 'now'))"
+      },
+      "constraints": [
+        "UNIQUE(playlist_id, user_id)"
+      ],
+      "indexes": [
+        "CREATE INDEX IF NOT EXISTS idx_playlist_collaborators_playlist_id ON playlist_collaborators(playlist_id);",
+        "CREATE INDEX IF NOT EXISTS idx_playlist_collaborators_user_id ON playlist_collaborators(user_id);"
+      ]
+    },
+    "playlist_tracks": {
+      "columns": {
+        "id": "TEXT PRIMARY KEY",
+        "playlist_id": "TEXT NOT NULL",
+        "song_id": "TEXT NOT NULL",
+        "song_title": "TEXT DEFAULT ''",
+        "artist": "TEXT DEFAULT ''",
+        "album": "TEXT DEFAULT ''",
+        "art_url": "TEXT DEFAULT ''",
+        "canvas_url": "TEXT DEFAULT ''",
+        "duration": "INTEGER DEFAULT 0",
+        "position": "INTEGER DEFAULT 0",
+        "added_at": "INTEGER DEFAULT (strftime('%s', 'now'))"
+      },
+      "constraints": [
+        "UNIQUE(playlist_id, song_id)"
+      ],
+      "indexes": [
+        "CREATE INDEX IF NOT EXISTS idx_playlist_tracks_playlist_id ON playlist_tracks(playlist_id);",
+        "CREATE INDEX IF NOT EXISTS idx_playlist_tracks_song_id ON playlist_tracks(song_id);"
+      ]
+    },
+    "podcast_history": {
+      "columns": {
+        "id": "TEXT PRIMARY KEY",
+        "user_id": "TEXT NOT NULL",
+        "episode_id": "TEXT NOT NULL",
+        "show_id": "TEXT DEFAULT ''",
+        "title": "TEXT DEFAULT ''",
+        "position_ms": "INTEGER DEFAULT 0",
+        "duration_ms": "INTEGER DEFAULT 0",
+        "is_completed": "INTEGER DEFAULT 0",
+        "updated_at": "INTEGER DEFAULT (strftime('%s', 'now'))"
+      },
+      "constraints": [
+        "UNIQUE(user_id, episode_id)"
+      ],
+      "indexes": [
+        "CREATE INDEX IF NOT EXISTS idx_podcast_history_user_id ON podcast_history(user_id);",
+        "CREATE INDEX IF NOT EXISTS idx_podcast_history_episode_id ON podcast_history(episode_id);"
+      ]
+    },
     "search_history": {
       "columns": {
         "id": "TEXT PRIMARY KEY",
@@ -126,6 +176,21 @@
         "CREATE INDEX IF NOT EXISTS idx_search_history_searched_at ON search_history(searched_at DESC);"
       ]
     },
+    "user_blacklists": {
+      "columns": {
+        "id": "TEXT PRIMARY KEY",
+        "user_id": "TEXT NOT NULL",
+        "item_id": "TEXT NOT NULL",
+        "item_type": "TEXT NOT NULL",
+        "created_at": "INTEGER DEFAULT (strftime('%s', 'now'))"
+      },
+      "constraints": [
+        "UNIQUE(user_id, item_id, item_type)"
+      ],
+      "indexes": [
+        "CREATE INDEX IF NOT EXISTS idx_user_blacklists_user_id ON user_blacklists(user_id);"
+      ]
+    },
     "user_clips": {
       "columns": {
         "id": "TEXT PRIMARY KEY",
@@ -134,8 +199,8 @@
         "song_title": "TEXT DEFAULT ''",
         "artist": "TEXT DEFAULT ''",
         "art_url": "TEXT DEFAULT ''",
-        "start_ms": "INTEGER NOT NULL",
-        "end_ms": "INTEGER NOT NULL",
+        "start_ms": "INTEGER NOT NULL DEFAULT 0",
+        "end_ms": "INTEGER NOT NULL DEFAULT 30000",
         "duration_ms": "INTEGER NOT NULL DEFAULT 30000",
         "created_at": "INTEGER DEFAULT (strftime('%s', 'now'))"
       },
@@ -144,13 +209,99 @@
         "CREATE INDEX IF NOT EXISTS idx_user_clips_song_id ON user_clips(song_id);"
       ]
     },
-    "canvas_cache": {
+    "user_downloads": {
       "columns": {
-        "song_id": "TEXT PRIMARY KEY",
-        "canvas_url": "TEXT NOT NULL",
-        "source": "TEXT DEFAULT 'spotify'",
+        "id": "TEXT PRIMARY KEY",
+        "user_id": "TEXT NOT NULL",
+        "song_id": "TEXT NOT NULL",
+        "song_title": "TEXT DEFAULT ''",
+        "artist": "TEXT DEFAULT ''",
+        "album": "TEXT DEFAULT ''",
+        "art_url": "TEXT DEFAULT ''",
+        "duration": "INTEGER DEFAULT 0",
+        "quality": "TEXT DEFAULT '320kbps'",
+        "downloaded_at": "INTEGER DEFAULT (strftime('%s', 'now'))"
+      },
+      "constraints": [
+        "UNIQUE(user_id, song_id)"
+      ],
+      "indexes": [
+        "CREATE INDEX IF NOT EXISTS idx_user_downloads_user_id ON user_downloads(user_id);",
+        "CREATE INDEX IF NOT EXISTS idx_user_downloads_song_id ON user_downloads(song_id);"
+      ]
+    },
+    "user_footprints": {
+      "columns": {
+        "id": "TEXT PRIMARY KEY",
+        "user_id": "TEXT NOT NULL UNIQUE",
+        "footprint_json": "TEXT DEFAULT '{}'",
         "updated_at": "INTEGER DEFAULT (strftime('%s', 'now'))"
-      }
+      },
+      "indexes": [
+        "CREATE INDEX IF NOT EXISTS idx_user_footprints_user_id ON user_footprints(user_id);"
+      ]
+    },
+    "user_settings": {
+      "columns": {
+        "id": "TEXT PRIMARY KEY",
+        "user_id": "TEXT NOT NULL UNIQUE",
+        "settings_json": "TEXT DEFAULT '{}'",
+        "updated_at": "INTEGER DEFAULT (strftime('%s', 'now'))"
+      },
+      "indexes": [
+        "CREATE INDEX IF NOT EXISTS idx_user_settings_user_id ON user_settings(user_id);"
+      ]
+    },
+    "followers": {
+      "columns": {
+        "id": "TEXT PRIMARY KEY",
+        "user_id": "TEXT NOT NULL",
+        "follower_id": "TEXT NOT NULL",
+        "follower_username": "TEXT DEFAULT ''",
+        "follower_display_name": "TEXT DEFAULT ''",
+        "follower_avatar_url": "TEXT DEFAULT ''",
+        "created_at": "INTEGER DEFAULT (strftime('%s', 'now'))"
+      },
+      "constraints": [
+        "UNIQUE(user_id, follower_id)"
+      ],
+      "indexes": [
+        "CREATE INDEX IF NOT EXISTS idx_followers_user_id ON followers(user_id);",
+        "CREATE INDEX IF NOT EXISTS idx_followers_follower_id ON followers(follower_id);"
+      ]
+    },
+    "following": {
+      "columns": {
+        "id": "TEXT PRIMARY KEY",
+        "user_id": "TEXT NOT NULL",
+        "following_id": "TEXT NOT NULL",
+        "following_username": "TEXT DEFAULT ''",
+        "following_display_name": "TEXT DEFAULT ''",
+        "following_avatar_url": "TEXT DEFAULT ''",
+        "created_at": "INTEGER DEFAULT (strftime('%s', 'now'))"
+      },
+      "constraints": [
+        "UNIQUE(user_id, following_id)"
+      ],
+      "indexes": [
+        "CREATE INDEX IF NOT EXISTS idx_following_user_id ON following(user_id);",
+        "CREATE INDEX IF NOT EXISTS idx_following_following_id ON following(following_id);"
+      ]
+    },
+    "playlists": {
+      "columns": {
+        "id": "TEXT PRIMARY KEY",
+        "owner_id": "TEXT NOT NULL",
+        "title": "TEXT NOT NULL",
+        "description": "TEXT DEFAULT ''",
+        "cover_url": "TEXT DEFAULT ''",
+        "is_public": "INTEGER DEFAULT 0",
+        "created_at": "INTEGER DEFAULT (strftime('%s', 'now'))",
+        "updated_at": "INTEGER DEFAULT (strftime('%s', 'now'))"
+      },
+      "indexes": [
+        "CREATE INDEX IF NOT EXISTS idx_playlists_owner_id ON playlists(owner_id);"
+      ]
     }
   }
 }
