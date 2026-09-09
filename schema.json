@@ -1,12 +1,11 @@
 {
-  "version": 1,
+  "version": 2,
   "name": "prosperity_music_d1",
   "description": "Canonical database schema for Prosperity Music (Cloudflare D1 / SQLite)",
   "tables": {
     "profiles": {
       "columns": {
         "id": "TEXT PRIMARY KEY",
-        "user_id": "TEXT",
         "username": "TEXT NOT NULL UNIQUE",
         "display_name": "TEXT",
         "bio": "TEXT DEFAULT ''",
@@ -16,14 +15,6 @@
         "social_link2": "TEXT DEFAULT ''",
         "social_link3": "TEXT DEFAULT ''",
         "cloudflare_token": "TEXT DEFAULT ''",
-        "featured_song_title": "TEXT DEFAULT ''",
-        "featured_song_id": "TEXT DEFAULT ''",
-        "featured_artist": "TEXT DEFAULT ''",
-        "featured_art_url": "TEXT DEFAULT ''",
-        "featured_start_ms": "INTEGER DEFAULT 0",
-        "featured_duration_ms": "INTEGER DEFAULT 30000",
-        "followers_count": "INTEGER DEFAULT 0",
-        "following_count": "INTEGER DEFAULT 0",
         "is_verified": "INTEGER DEFAULT 0",
         "created_at": "INTEGER DEFAULT (strftime('%s', 'now'))",
         "updated_at": "INTEGER DEFAULT (strftime('%s', 'now'))"
@@ -37,14 +28,12 @@
         "id": "TEXT PRIMARY KEY",
         "user_id": "TEXT NOT NULL",
         "song_id": "TEXT NOT NULL",
-        "title": "TEXT DEFAULT ''",
         "song_title": "TEXT DEFAULT ''",
         "artist": "TEXT DEFAULT ''",
         "album": "TEXT DEFAULT ''",
         "art_url": "TEXT DEFAULT ''",
         "canvas_url": "TEXT DEFAULT ''",
         "duration": "INTEGER DEFAULT 0",
-        "created_at": "INTEGER DEFAULT (strftime('%s', 'now'))",
         "liked_at": "INTEGER DEFAULT (strftime('%s', 'now'))"
       },
       "constraints": [
@@ -58,8 +47,7 @@
     "playlists": {
       "columns": {
         "id": "TEXT PRIMARY KEY",
-        "user_id": "TEXT",
-        "owner_id": "TEXT",
+        "owner_id": "TEXT NOT NULL",
         "title": "TEXT NOT NULL",
         "description": "TEXT DEFAULT ''",
         "cover_url": "TEXT DEFAULT ''",
@@ -68,8 +56,7 @@
         "updated_at": "INTEGER DEFAULT (strftime('%s', 'now'))"
       },
       "indexes": [
-        "CREATE INDEX IF NOT EXISTS idx_playlists_owner_id ON playlists(owner_id);",
-        "CREATE INDEX IF NOT EXISTS idx_playlists_user_id ON playlists(user_id);"
+        "CREATE INDEX IF NOT EXISTS idx_playlists_owner_id ON playlists(owner_id);"
       ]
     },
     "playlist_tracks": {
@@ -77,7 +64,6 @@
         "id": "TEXT PRIMARY KEY",
         "playlist_id": "TEXT NOT NULL",
         "song_id": "TEXT NOT NULL",
-        "title": "TEXT DEFAULT ''",
         "song_title": "TEXT DEFAULT ''",
         "artist": "TEXT DEFAULT ''",
         "album": "TEXT DEFAULT ''",
@@ -115,7 +101,6 @@
         "id": "TEXT PRIMARY KEY",
         "user_id": "TEXT NOT NULL",
         "song_id": "TEXT NOT NULL",
-        "title": "TEXT DEFAULT ''",
         "song_title": "TEXT DEFAULT ''",
         "artist": "TEXT DEFAULT ''",
         "album": "TEXT DEFAULT ''",
@@ -146,7 +131,7 @@
         "id": "TEXT PRIMARY KEY",
         "user_id": "TEXT NOT NULL",
         "song_id": "TEXT NOT NULL",
-        "title": "TEXT DEFAULT ''",
+        "song_title": "TEXT DEFAULT ''",
         "artist": "TEXT DEFAULT ''",
         "art_url": "TEXT DEFAULT ''",
         "start_ms": "INTEGER NOT NULL",
