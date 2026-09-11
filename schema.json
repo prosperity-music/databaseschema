@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "name": "prosperity_music_d1",
   "description": "Comprehensive Canonical Cloudflare D1 Database Schema for Prosperity Music",
   "tables": {
@@ -24,18 +24,10 @@
         "CREATE INDEX IF NOT EXISTS idx_profiles_username ON profiles(username);"
       ]
     },
-    "canvas_cache": {
-      "columns": {
-        "song_id": "TEXT PRIMARY KEY",
-        "canvas_url": "TEXT NOT NULL",
-        "source": "TEXT DEFAULT 'spotify'",
-        "updated_at": "INTEGER DEFAULT (strftime('%s', 'now'))"
-      }
-    },
     "liked_songs": {
       "columns": {
         "id": "TEXT PRIMARY KEY",
-        "user_id": "TEXT NOT NULL",
+        "user_id": "TEXT NOT NULL REFERENCES profiles(id) ON DELETE CASCADE",
         "song_id": "TEXT NOT NULL",
         "song_title": "TEXT DEFAULT ''",
         "artist": "TEXT DEFAULT ''",
