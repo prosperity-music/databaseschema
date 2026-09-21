@@ -1,5 +1,5 @@
 {
-  "version": 4,
+  "version": 5,
   "name": "prosperity_music_d1",
   "description": "Comprehensive Canonical Cloudflare D1 Database Schema for Prosperity Music",
   "tables": {
@@ -252,6 +252,9 @@
         "follower_username": "TEXT DEFAULT ''",
         "follower_display_name": "TEXT DEFAULT ''",
         "follower_avatar_url": "TEXT DEFAULT ''",
+        "role": "TEXT DEFAULT 'user'",
+        "type": "TEXT DEFAULT 'user'",
+        "uid": "TEXT DEFAULT ''",
         "created_at": "INTEGER DEFAULT (strftime('%s', 'now'))"
       },
       "constraints": [
@@ -270,6 +273,9 @@
         "following_username": "TEXT DEFAULT ''",
         "following_display_name": "TEXT DEFAULT ''",
         "following_avatar_url": "TEXT DEFAULT ''",
+        "role": "TEXT DEFAULT 'user'",
+        "type": "TEXT DEFAULT 'user'",
+        "uid": "TEXT DEFAULT ''",
         "created_at": "INTEGER DEFAULT (strftime('%s', 'now'))"
       },
       "constraints": [
