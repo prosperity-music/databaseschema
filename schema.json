@@ -288,35 +288,6 @@
         "CREATE INDEX IF NOT EXISTS idx_following_following_id ON following(following_id);"
       ]
     },
-    "user_requests": {
-      "columns": {
-        "id": "TEXT PRIMARY KEY",
-        "user_id": "TEXT DEFAULT ''",
-        "type": "TEXT DEFAULT 'follow'",
-        "from_username": "TEXT NOT NULL",
-        "from_display_name": "TEXT DEFAULT ''",
-        "from_avatar_url": "TEXT DEFAULT ''",
-        "from_worker_url": "TEXT DEFAULT ''",
-        "to_username": "TEXT DEFAULT ''",
-        "playlist_id": "TEXT DEFAULT ''",
-        "playlist_title": "TEXT DEFAULT ''",
-        "playlist_cover_url": "TEXT DEFAULT ''",
-        "template_id": "TEXT DEFAULT ''",
-        "custom_title": "TEXT DEFAULT ''",
-        "custom_subtitle": "TEXT DEFAULT ''",
-        "sample_image_url": "TEXT DEFAULT ''",
-        "primary_accent": "INTEGER DEFAULT 0",
-        "gradient_colors": "TEXT DEFAULT ''",
-        "is_public": "INTEGER DEFAULT 0",
-        "status": "TEXT DEFAULT 'pending'",
-        "created_at": "INTEGER DEFAULT (strftime('%s', 'now'))",
-        "updated_at": "INTEGER DEFAULT (strftime('%s', 'now'))"
-      },
-      "indexes": [
-        "CREATE INDEX IF NOT EXISTS idx_user_requests_to_user ON user_requests(to_username);",
-        "CREATE INDEX IF NOT EXISTS idx_user_requests_status ON user_requests(status);"
-      ]
-    },
     "user_presence": {
       "columns": {
         "id": "TEXT PRIMARY KEY",
