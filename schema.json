@@ -168,22 +168,7 @@
         "CREATE INDEX IF NOT EXISTS idx_search_history_searched_at ON search_history(searched_at DESC);"
       ]
     },
-    "user_blacklists": {
-      "columns": {
-        "id": "TEXT PRIMARY KEY",
-        "user_id": "TEXT NOT NULL",
-        "item_id": "TEXT NOT NULL",
-        "item_type": "TEXT NOT NULL",
-        "created_at": "INTEGER DEFAULT (strftime('%s', 'now'))"
-      },
-      "constraints": [
-        "UNIQUE(user_id, item_id, item_type)"
-      ],
-      "indexes": [
-        "CREATE INDEX IF NOT EXISTS idx_user_blacklists_user_id ON user_blacklists(user_id);"
-      ]
-    },
-    "user_clips": {
+    "profile_clips": {
       "columns": {
         "id": "TEXT PRIMARY KEY",
         "user_id": "TEXT NOT NULL",
@@ -197,11 +182,11 @@
         "created_at": "INTEGER DEFAULT (strftime('%s', 'now'))"
       },
       "indexes": [
-        "CREATE INDEX IF NOT EXISTS idx_user_clips_user_id ON user_clips(user_id);",
-        "CREATE INDEX IF NOT EXISTS idx_user_clips_song_id ON user_clips(song_id);"
+        "CREATE INDEX IF NOT EXISTS idx_profile_clips_user_id ON profile_clips(user_id);",
+        "CREATE INDEX IF NOT EXISTS idx_profile_clips_song_id ON profile_clips(song_id);"
       ]
     },
-    "user_downloads": {
+    "downloads": {
       "columns": {
         "id": "TEXT PRIMARY KEY",
         "user_id": "TEXT NOT NULL",
@@ -218,11 +203,11 @@
         "UNIQUE(user_id, song_id)"
       ],
       "indexes": [
-        "CREATE INDEX IF NOT EXISTS idx_user_downloads_user_id ON user_downloads(user_id);",
-        "CREATE INDEX IF NOT EXISTS idx_user_downloads_song_id ON user_downloads(song_id);"
+        "CREATE INDEX IF NOT EXISTS idx_downloads_user_id ON downloads(user_id);",
+        "CREATE INDEX IF NOT EXISTS idx_downloads_song_id ON downloads(song_id);"
       ]
     },
-    "user_footprints": {
+    "footprints": {
       "columns": {
         "id": "TEXT PRIMARY KEY",
         "user_id": "TEXT NOT NULL UNIQUE",
@@ -230,10 +215,10 @@
         "updated_at": "INTEGER DEFAULT (strftime('%s', 'now'))"
       },
       "indexes": [
-        "CREATE INDEX IF NOT EXISTS idx_user_footprints_user_id ON user_footprints(user_id);"
+        "CREATE INDEX IF NOT EXISTS idx_footprints_user_id ON footprints(user_id);"
       ]
     },
-    "user_settings": {
+    "settings": {
       "columns": {
         "id": "TEXT PRIMARY KEY",
         "user_id": "TEXT NOT NULL UNIQUE",
@@ -241,7 +226,7 @@
         "updated_at": "INTEGER DEFAULT (strftime('%s', 'now'))"
       },
       "indexes": [
-        "CREATE INDEX IF NOT EXISTS idx_user_settings_user_id ON user_settings(user_id);"
+        "CREATE INDEX IF NOT EXISTS idx_settings_user_id ON settings(user_id);"
       ]
     },
     "followers": {
