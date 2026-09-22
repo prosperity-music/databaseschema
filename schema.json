@@ -68,6 +68,8 @@
         "id": "TEXT PRIMARY KEY",
         "user_id": "TEXT NOT NULL",
         "owner_id": "TEXT DEFAULT ''",
+        "owner_worker_url": "TEXT DEFAULT ''",
+        "collaborator_workers": "TEXT DEFAULT ''",
         "title": "TEXT NOT NULL",
         "description": "TEXT DEFAULT ''",
         "cover_url": "TEXT DEFAULT ''",
@@ -253,6 +255,7 @@
         "role": "TEXT DEFAULT 'user'",
         "type": "TEXT DEFAULT 'user'",
         "uid": "TEXT DEFAULT ''",
+        "worker_url": "TEXT DEFAULT ''",
         "created_at": "INTEGER DEFAULT (strftime('%s', 'now'))"
       },
       "constraints": [
@@ -274,6 +277,7 @@
         "role": "TEXT DEFAULT 'user'",
         "type": "TEXT DEFAULT 'user'",
         "uid": "TEXT DEFAULT ''",
+        "worker_url": "TEXT DEFAULT ''",
         "created_at": "INTEGER DEFAULT (strftime('%s', 'now'))"
       },
       "constraints": [
