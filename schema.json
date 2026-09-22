@@ -1,5 +1,5 @@
 {
-  "version": 7,
+  "version": 8,
   "name": "prosperity_music_d1",
   "description": "Comprehensive Canonical Cloudflare D1 Database Schema for Prosperity Music",
   "tables": {
@@ -24,7 +24,7 @@
         "CREATE INDEX IF NOT EXISTS idx_profiles_username ON profiles(username);"
       ]
     },
-    "liked_songs": {
+    "songs": {
       "columns": {
         "id": "TEXT PRIMARY KEY",
         "user_id": "TEXT NOT NULL REFERENCES profiles(id) ON DELETE CASCADE",
@@ -41,11 +41,11 @@
         "UNIQUE(user_id, song_id)"
       ],
       "indexes": [
-        "CREATE INDEX IF NOT EXISTS idx_liked_songs_user_id ON liked_songs(user_id);",
-        "CREATE INDEX IF NOT EXISTS idx_liked_songs_song_id ON liked_songs(song_id);"
+        "CREATE INDEX IF NOT EXISTS idx_songs_user_id ON songs(user_id);",
+        "CREATE INDEX IF NOT EXISTS idx_songs_song_id ON songs(song_id);"
       ]
     },
-    "liked_albums": {
+    "albums": {
       "columns": {
         "id": "TEXT PRIMARY KEY",
         "user_id": "TEXT NOT NULL",
@@ -59,59 +59,39 @@
         "UNIQUE(user_id, album_id)"
       ],
       "indexes": [
-        "CREATE INDEX IF NOT EXISTS idx_liked_albums_user_id ON liked_albums(user_id);",
-        "CREATE INDEX IF NOT EXISTS idx_liked_albums_album_id ON liked_albums(album_id);"
+        "CREATE INDEX IF NOT EXISTS idx_albums_user_id ON albums(user_id);",
+        "CREATE INDEX IF NOT EXISTS idx_albums_album_id ON albums(album_id);"
       ]
     },
-    "liked_playlists": {
+    "playlists": {
       "columns": {
         "id": "TEXT PRIMARY KEY",
         "user_id": "TEXT NOT NULL",
-        "playlist_id": "TEXT NOT NULL",
-        "title": "TEXT DEFAULT ''",
-        "art_url": "TEXT DEFAULT ''",
-        "added_at": "INTEGER DEFAULT (strftime('%s', 'now'))"
+        "owner_id": "TEXT DEFAULT ''",
+        "title": "TEXT NOT NULL",
+        "description": "TEXT DEFAULT ''",
+        "cover_url": "TEXT DEFAULT ''",
+        "type": "TEXT DEFAULT 'created'",
+        "collab_role": "TEXT DEFAULT 'owner'",
+        "collab_status": "TEXT DEFAULT 'accepted'",
+        "invited_by": "TEXT DEFAULT ''",
+        "template_id": "TEXT DEFAULT ''",
+        "custom_title": "TEXT DEFAULT ''",
+        "custom_subtitle": "TEXT DEFAULT ''",
+        "sample_image_url": "TEXT DEFAULT ''",
+        "primary_accent": "INTEGER DEFAULT 0",
+        "gradient_colors": "TEXT DEFAULT ''",
+        "is_public": "INTEGER DEFAULT 0",
+        "created_at": "INTEGER DEFAULT (strftime('%s', 'now'))",
+        "updated_at": "INTEGER DEFAULT (strftime('%s', 'now'))"
       },
       "constraints": [
-        "UNIQUE(user_id, playlist_id)"
+        "UNIQUE(user_id, id)"
       ],
       "indexes": [
-        "CREATE INDEX IF NOT EXISTS idx_liked_playlists_user_id ON liked_playlists(user_id);",
-        "CREATE INDEX IF NOT EXISTS idx_liked_playlists_playlist_id ON liked_playlists(playlist_id);"
-      ]
-    },
-    "listening_history": {
-      "columns": {
-        "id": "TEXT PRIMARY KEY",
-        "user_id": "TEXT NOT NULL",
-        "song_id": "TEXT NOT NULL",
-        "song_title": "TEXT DEFAULT ''",
-        "artist": "TEXT DEFAULT ''",
-        "album": "TEXT DEFAULT ''",
-        "art_url": "TEXT DEFAULT ''",
-        "canvas_url": "TEXT DEFAULT ''",
-        "played_at": "INTEGER DEFAULT (strftime('%s', 'now'))"
-      },
-      "indexes": [
-        "CREATE INDEX IF NOT EXISTS idx_listening_history_user_id ON listening_history(user_id);",
-        "CREATE INDEX IF NOT EXISTS idx_listening_history_played_at ON listening_history(played_at DESC);",
-        "CREATE UNIQUE INDEX IF NOT EXISTS idx_listening_history_user_song ON listening_history(user_id, song_id);"
-      ]
-    },
-    "playlist_collaborators": {
-      "columns": {
-        "id": "TEXT PRIMARY KEY",
-        "playlist_id": "TEXT NOT NULL",
-        "user_id": "TEXT NOT NULL",
-        "role": "TEXT DEFAULT 'editor'",
-        "created_at": "INTEGER DEFAULT (strftime('%s', 'now'))"
-      },
-      "constraints": [
-        "UNIQUE(playlist_id, user_id)"
-      ],
-      "indexes": [
-        "CREATE INDEX IF NOT EXISTS idx_playlist_collaborators_playlist_id ON playlist_collaborators(playlist_id);",
-        "CREATE INDEX IF NOT EXISTS idx_playlist_collaborators_user_id ON playlist_collaborators(user_id);"
+        "CREATE INDEX IF NOT EXISTS idx_playlists_user_id ON playlists(user_id);",
+        "CREATE INDEX IF NOT EXISTS idx_playlists_owner_id ON playlists(owner_id);",
+        "CREATE INDEX IF NOT EXISTS idx_playlists_type ON playlists(type);"
       ]
     },
     "playlist_tracks": {
@@ -134,6 +114,24 @@
       "indexes": [
         "CREATE INDEX IF NOT EXISTS idx_playlist_tracks_playlist_id ON playlist_tracks(playlist_id);",
         "CREATE INDEX IF NOT EXISTS idx_playlist_tracks_song_id ON playlist_tracks(song_id);"
+      ]
+    },
+    "listening_history": {
+      "columns": {
+        "id": "TEXT PRIMARY KEY",
+        "user_id": "TEXT NOT NULL",
+        "song_id": "TEXT NOT NULL",
+        "song_title": "TEXT DEFAULT ''",
+        "artist": "TEXT DEFAULT ''",
+        "album": "TEXT DEFAULT ''",
+        "art_url": "TEXT DEFAULT ''",
+        "canvas_url": "TEXT DEFAULT ''",
+        "played_at": "INTEGER DEFAULT (strftime('%s', 'now'))"
+      },
+      "indexes": [
+        "CREATE INDEX IF NOT EXISTS idx_listening_history_user_id ON listening_history(user_id);",
+        "CREATE INDEX IF NOT EXISTS idx_listening_history_played_at ON listening_history(played_at DESC);",
+        "CREATE UNIQUE INDEX IF NOT EXISTS idx_listening_history_user_song ON listening_history(user_id, song_id);"
       ]
     },
     "podcast_history": {
@@ -284,27 +282,6 @@
       "indexes": [
         "CREATE INDEX IF NOT EXISTS idx_following_user_id ON following(user_id);",
         "CREATE INDEX IF NOT EXISTS idx_following_following_id ON following(following_id);"
-      ]
-    },
-    "playlists": {
-      "columns": {
-        "id": "TEXT PRIMARY KEY",
-        "owner_id": "TEXT NOT NULL",
-        "title": "TEXT NOT NULL",
-        "description": "TEXT DEFAULT ''",
-        "cover_url": "TEXT DEFAULT ''",
-        "template_id": "TEXT DEFAULT ''",
-        "custom_title": "TEXT DEFAULT ''",
-        "custom_subtitle": "TEXT DEFAULT ''",
-        "sample_image_url": "TEXT DEFAULT ''",
-        "primary_accent": "INTEGER DEFAULT 0",
-        "gradient_colors": "TEXT DEFAULT ''",
-        "is_public": "INTEGER DEFAULT 0",
-        "created_at": "INTEGER DEFAULT (strftime('%s', 'now'))",
-        "updated_at": "INTEGER DEFAULT (strftime('%s', 'now'))"
-      },
-      "indexes": [
-        "CREATE INDEX IF NOT EXISTS idx_playlists_owner_id ON playlists(owner_id);"
       ]
     },
     "user_requests": {
