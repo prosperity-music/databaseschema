@@ -1,5 +1,5 @@
 {
-  "version": 6,
+  "version": 7,
   "name": "prosperity_music_d1",
   "description": "Comprehensive Canonical Cloudflare D1 Database Schema for Prosperity Music",
   "tables": {
@@ -293,6 +293,12 @@
         "title": "TEXT NOT NULL",
         "description": "TEXT DEFAULT ''",
         "cover_url": "TEXT DEFAULT ''",
+        "template_id": "TEXT DEFAULT ''",
+        "custom_title": "TEXT DEFAULT ''",
+        "custom_subtitle": "TEXT DEFAULT ''",
+        "sample_image_url": "TEXT DEFAULT ''",
+        "primary_accent": "INTEGER DEFAULT 0",
+        "gradient_colors": "TEXT DEFAULT ''",
         "is_public": "INTEGER DEFAULT 0",
         "created_at": "INTEGER DEFAULT (strftime('%s', 'now'))",
         "updated_at": "INTEGER DEFAULT (strftime('%s', 'now'))"
@@ -314,6 +320,12 @@
         "playlist_id": "TEXT DEFAULT ''",
         "playlist_title": "TEXT DEFAULT ''",
         "playlist_cover_url": "TEXT DEFAULT ''",
+        "template_id": "TEXT DEFAULT ''",
+        "custom_title": "TEXT DEFAULT ''",
+        "custom_subtitle": "TEXT DEFAULT ''",
+        "sample_image_url": "TEXT DEFAULT ''",
+        "primary_accent": "INTEGER DEFAULT 0",
+        "gradient_colors": "TEXT DEFAULT ''",
         "is_public": "INTEGER DEFAULT 0",
         "status": "TEXT DEFAULT 'pending'",
         "created_at": "INTEGER DEFAULT (strftime('%s', 'now'))",
