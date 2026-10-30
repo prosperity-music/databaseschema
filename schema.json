@@ -1,5 +1,5 @@
 {
-  "version": 10,
+  "version": 11,
   "name": "prosperity_music_d1",
   "description": "Comprehensive Canonical Cloudflare D1 Database Schema for Prosperity Music",
   "tables": {
@@ -42,14 +42,15 @@
         "art_url": "TEXT DEFAULT ''",
         "canvas_url": "TEXT DEFAULT ''",
         "duration": "INTEGER DEFAULT 0",
-        "liked_at": "INTEGER DEFAULT (strftime('%s', 'now'))"
+        "liked_at": "INTEGER DEFAULT (strftime('%s', 'now') * 1000)"
       },
       "constraints": [
         "UNIQUE(user_id, song_id)"
       ],
       "indexes": [
         "CREATE INDEX IF NOT EXISTS idx_songs_user_id ON songs(user_id);",
-        "CREATE INDEX IF NOT EXISTS idx_songs_song_id ON songs(song_id);"
+        "CREATE INDEX IF NOT EXISTS idx_songs_song_id ON songs(song_id);",
+        "CREATE INDEX IF NOT EXISTS idx_songs_liked_at ON songs(liked_at DESC);"
       ]
     },
     "albums": {
@@ -60,14 +61,15 @@
         "title": "TEXT DEFAULT ''",
         "artist": "TEXT DEFAULT ''",
         "art_url": "TEXT DEFAULT ''",
-        "added_at": "INTEGER DEFAULT (strftime('%s', 'now'))"
+        "added_at": "INTEGER DEFAULT (strftime('%s', 'now') * 1000)"
       },
       "constraints": [
         "UNIQUE(user_id, album_id)"
       ],
       "indexes": [
         "CREATE INDEX IF NOT EXISTS idx_albums_user_id ON albums(user_id);",
-        "CREATE INDEX IF NOT EXISTS idx_albums_album_id ON albums(album_id);"
+        "CREATE INDEX IF NOT EXISTS idx_albums_album_id ON albums(album_id);",
+        "CREATE INDEX IF NOT EXISTS idx_albums_added_at ON albums(added_at DESC);"
       ]
     },
     "playlists": {
@@ -91,8 +93,8 @@
         "primary_accent": "INTEGER DEFAULT 0",
         "gradient_colors": "TEXT DEFAULT ''",
         "is_public": "INTEGER DEFAULT 0",
-        "created_at": "INTEGER DEFAULT 0",
-        "updated_at": "INTEGER DEFAULT 0"
+        "created_at": "INTEGER DEFAULT (strftime('%s', 'now') * 1000)",
+        "updated_at": "INTEGER DEFAULT (strftime('%s', 'now') * 1000)"
       },
       "constraints": [
         "UNIQUE(user_id, id)"
@@ -100,7 +102,9 @@
       "indexes": [
         "CREATE INDEX IF NOT EXISTS idx_playlists_user_id ON playlists(user_id);",
         "CREATE INDEX IF NOT EXISTS idx_playlists_owner_id ON playlists(owner_id);",
-        "CREATE INDEX IF NOT EXISTS idx_playlists_type ON playlists(type);"
+        "CREATE INDEX IF NOT EXISTS idx_playlists_type ON playlists(type);",
+        "CREATE INDEX IF NOT EXISTS idx_playlists_updated_at ON playlists(updated_at DESC);",
+        "CREATE INDEX IF NOT EXISTS idx_playlists_created_at ON playlists(created_at DESC);"
       ]
     },
     "playlist_tracks": {
@@ -153,7 +157,7 @@
         "album": "TEXT DEFAULT ''",
         "art_url": "TEXT DEFAULT ''",
         "canvas_url": "TEXT DEFAULT ''",
-        "played_at": "INTEGER DEFAULT 0"
+        "played_at": "INTEGER DEFAULT (strftime('%s', 'now') * 1000)"
       },
       "indexes": [
         "CREATE INDEX IF NOT EXISTS idx_listening_history_user_id ON listening_history(user_id);",
