@@ -1,5 +1,5 @@
 {
-  "version": 11,
+  "version": 12,
   "name": "prosperity_music_d1",
   "description": "Comprehensive Canonical Cloudflare D1 Database Schema for Prosperity Music",
   "tables": {
